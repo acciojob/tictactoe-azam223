@@ -64,3 +64,33 @@ function getPlayer2Name() {
 
 // Initialize the game when the "Start Game" button is clicked
 document.getElementById("submit").addEventListener("click", initializeGame);
+// Make sure to replace 'baseUrl' with your actual URL if not defined
+const baseUrl = "http://localhost:3000";
+
+// Cypress test
+describe("Tic Tac Toe Game", () => {
+  it("should allow players to make moves and display messages", () => {
+    cy.visit(baseUrl);
+
+    // Wait for elements to be visible and enter player names
+    cy.get('#player-1').should('be.visible').type('Player1');
+    cy.get('#player-2').should('be.visible').type('Player2');
+    cy.get('#submit').click();
+
+    // Wait for message to update
+    cy.get('.message').should('contain', "Player1, you're up");
+
+    // Make moves
+    cy.get('#1').click();
+    cy.get('#4').click();
+
+    // Check whose turn it is
+    cy.get('.message').should('contain', "Player2, you're up");
+    cy.get('#2').click();
+    cy.get('#5').click();
+    cy.get('#3').click();
+
+    // Check for player 1's win
+    cy.get('.message').should('contain', "Player1 congratulations you won!");
+  });
+});
